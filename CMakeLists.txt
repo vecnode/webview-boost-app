@@ -59,10 +59,39 @@ if(APPLE)
 endif()
 
 if(WIN32)
+    # Boost.Asio on Windows requires Winsock and the correct API-level define.
+    # _WIN32_WINNT=0x0A00 targets Windows 10 and enables modern async I/O APIs.
+    # WIN32_LEAN_AND_MEAN keeps windows.h slim so it doesn't clash with Boost/STL.
+    # NOMINMAX prevents the windows.h min/max macros from conflicting with std::min/max.
+    target_compile_definitions(webview-app PRIVATE
+        _WIN32_WINNT=0x0A00
+        WIN32_LEAN_AND_MEAN
+        NOMINMAX
+    )
+    target_link_libraries(webview-app PRIVATE
+        ws2_32
+        mswsock
+    )
+endif()
+
+if(WIN32)
+    # WebView2Loader.dll is shipped inside the MSWebView2 NuGet package that the
+    # webview cmake fetches via FetchContent. Its path is architecture-specific.
+    if(CMAKE_SYSTEM_PROCESSOR MATCHES "ARM64|arm64|aarch64")
+        set(_wv2_arch "arm64")
+    elseif(CMAKE_SIZEOF_VOID_P EQUAL 8)
+        set(_wv2_arch "x64")
+    else()
+        set(_wv2_arch "x86")
+    endif()
+    set(_webview2_loader_dll
+        "${CMAKE_BINARY_DIR}/_deps/microsoft_web_webview2-src/build/native/${_wv2_arch}/WebView2Loader.dll"
+    )
+
     add_custom_command(TARGET webview-app POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_directory
-            $<TARGET_FILE_DIR:webview-app>/../bin/$<CONFIG>
-            $<TARGET_FILE_DIR:webview-app>
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            "${_webview2_loader_dll}"
+            $<TARGET_FILE_DIR:webview-app>/WebView2Loader.dll
         COMMAND ${CMAKE_COMMAND} -E make_directory
             $<TARGET_FILE_DIR:webview-app>/icons
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
