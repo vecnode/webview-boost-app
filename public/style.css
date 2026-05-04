@@ -1,0 +1,78 @@
+:root {
+  --bg-top: #f8fafc;
+  --bg-bottom: #dbeafe;
+  --card-bg: #ffffff;
+  --text: #0f172a;
+  --muted: #475569;
+  --button: #0f766e;
+  --button-hover: #115e59;
+  --border: #cbd5e1;
+  --shadow: 0 16px 40px rgba(15, 23, 42, 0.12);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  color: var(--text);
+}
+
+body {
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
+}
+
+.card {
+  width: min(520px, 100%);
+  padding: 28px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--card-bg);
+  box-shadow: var(--shadow);
+  display: grid;
+  gap: 14px;
+}
+
+h1 {
+  margin: 0;
+  font-size: 1.7rem;
+}
+
+p {
+  margin: 0;
+  color: var(--muted);
+}
+
+#hello-button {
+  border: none;
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffffff;
+  background: var(--button);
+  cursor: pointer;
+}
+
+#hello-button:hover {
+  background: var(--button-hover);
+}
+
+#hello-button:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+#hello-output {
+  min-height: 24px;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
